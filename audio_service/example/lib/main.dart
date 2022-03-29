@@ -39,11 +39,19 @@ Future<void> main() async {
       androidNotificationOngoing: true,
     ),
   );
+
+  MyApp.started = DateTime.now();
+  Timer.periodic(const Duration(seconds: 1), (t) {
+    print("app started ${DateTime.now().difference(MyApp.started).inSeconds} sec ago");
+  });
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  static var started = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +66,8 @@ class MyApp extends StatelessWidget {
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
 
+  static Timer? timer;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +78,14 @@ class MainScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            StatefulBuilder(builder: (context, setState) {
+              timer ??= Timer.periodic(const Duration(seconds: 1), (t) {
+                setState(() {});
+              });
+              return Text('App started ${DateTime.now().difference(MyApp.started).inSeconds} sec ago',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+            }),
+            const SizedBox(height: 20),
             // Show media item title
             StreamBuilder<MediaItem?>(
               stream: _audioHandler.mediaItem,
