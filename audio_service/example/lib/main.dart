@@ -246,4 +246,10 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       queueIndex: event.currentIndex,
     );
   }
+
+  @override
+  Future<void> onTaskRemoved() async {
+    print('onTaskRemoved');
+    await stop();
+  }
 }

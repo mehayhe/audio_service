@@ -40,6 +40,7 @@ import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import android.net.Uri;
+import android.os.IBinder;
 
 public class AudioService extends MediaBrowserServiceCompat {
     public static final String CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED";
@@ -284,12 +285,25 @@ public class AudioService extends MediaBrowserServiceCompat {
     }
 
     @Override
+    public boolean onUnbind (Intent intent) {
+        System.out.println("AUDIOSERVICE service onUnbind " + intent);
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public IBinder onBind (Intent intent) {
+        System.out.println("AUDIOSERVICE service onBind " + intent);
+        return super.onBind(intent);
+    }
+
+    @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         MediaButtonReceiver.handleIntent(mediaSession, intent);
         return START_NOT_STICKY;
     }
 
     public void stop() {
+        System.out.println("AUDIOSERVICE service stop");
         deactivateMediaSession();
         stopSelf();
     }
@@ -297,6 +311,7 @@ public class AudioService extends MediaBrowserServiceCompat {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        System.out.println("AUDIOSERVICE service onDestroy");
         if (listener != null) {
             listener.onDestroy();
             listener = null;
